@@ -1,8 +1,8 @@
 {
-  "name": "tem",
-  "version": "0.0.0",
+  "name": "vue-clock-lonlyape-v3",
+  "version": "1.0.0",
   "type": "module",
-  "description": "a clock component for vue",
+  "description": "a clock component for vue3",
   "author": "lonlyape <lonlyape@gmail.com>",
   "private": false,
   "main": "dist/vue-clock.js",
@@ -12,12 +12,13 @@
     "preview": "vite preview"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/lonlyape"
+    "registry": "https://registry.npmjs.org/lonlyape"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/lonlyape/vue-clock.git"
+    "url": "https://github.com/lonlyape/vue-clock-v3.git"
   },
+  "license": "MIT",
   "keywords": [
     "vue-clock-v3",
     "vue-clock-lonlyape",

@@ -4,7 +4,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, nextTick, onBeforeMount, ref, watch } from 'vue';
+import { nextTick, onBeforeMount, ref, watch, withDefaults } from 'vue';
 
 interface Time {
   isStatic: boolean //是否为静止时间
@@ -13,7 +13,7 @@ interface Time {
 interface Border {
   type: 'circle' | 'rectangle' //边界类型（圆、四边形）;circle(圆形) 、 rectangle(四边形)
   width: number //时钟的宽度或直径，如果 type==circle ，则为时钟的直径
-  height: number //时钟的高度，只有 type==rectangle 明有效
+  height?: number //时钟的高度，只有 type==rectangle 明有效
   lineWidth: number //边界线的宽度（粗细）
   color: string //边界线的颜色
 }
@@ -49,7 +49,7 @@ interface Needle {
 interface PropsType {
   option?:PropsType,
   width?: string | number
-  height?: string | number
+  height?: string | number // 默认 400px
   adaptive?: boolean //自适应
   timezone?: string //时区
   time?: Time //时间配置
@@ -122,9 +122,53 @@ const defOption: PropsType = {
 }
 
 const emits = defineEmits(['timeChange'])
-const props = defineProps<PropsType>()
+const props = withDefaults(defineProps<PropsType>(),{
+  adaptive: true
+})
 
-const drawOption = computed(() => {
+const drawOption = ref()
+
+const $el = ref()
+const canvas = ref()
+const timeAngle = ref()
+
+var context: any = {}
+var timeInterval: any = {}
+var transitionOption: any = {}
+
+const clockBoxStyle = ref({})
+
+
+onBeforeMount(() => {
+  nextTick(() => {
+    context = canvas.value.getContext('2d')
+    setClockBoxStyle()
+    newData()
+    if (!drawOption.value.time.isStatic) {
+      timeInterval = setInterval(newData, 1000);
+    }
+
+    draw();
+    setTimeout(drawAsResize, 100);
+  })
+})
+watch(drawOption,()=>{
+  if(drawOption.value.time.isStatic) {
+    clearInterval(timeInterval);
+  }
+  canvas.value && draw();
+},{deep: true})
+watch(timeAngle,draw)
+
+inigFun()
+
+//================================================================ methods
+
+function inigFun(){
+  drawOption.value = getDrawOption()
+}
+
+function getDrawOption(){
   let newOption:any = {
     ...props
   }
@@ -177,41 +221,7 @@ const drawOption = computed(() => {
     number,
     needle,
   }
-})
-
-const $el = ref()
-const canvas = ref()
-const timeAngle = ref()
-
-var context: any = {}
-var timeInterval: any = {}
-var transitionOption: any = {}
-
-const clockBoxStyle = ref({})
-
-
-onBeforeMount(() => {
-  nextTick(() => {
-    context = canvas.value.getContext('2d')
-    setClockBoxStyle()
-    newData()
-    if (!drawOption.value.time.isStatic) {
-      timeInterval = setInterval(newData, 1000);
-    }
-
-    draw();
-    setTimeout(drawAsResize, 100);
-  })
-})
-watch(drawOption,()=>{
-  if(drawOption.value.time.isStatic) {
-    clearInterval(timeInterval);
-  }
-  draw();
-},{deep: true})
-watch(timeAngle,draw)
-
-//================================================================ methods
+}
 
 //resize
 function drawAsResize() {
@@ -230,7 +240,7 @@ function drawAsResize() {
   elObserver.observe($el.value);
 }
 //自适应参数设置
-function setNumberValue(obj: { [x: string]: any; }, oldObj: { [x: string]: any; }, newW: number, oldW: number) {
+function setNumberValue(obj: { [x: string]: any; }, oldObj: { [x: string]: any; }, newW: number, oldW: number, level: number = 0) {
   if (!drawOption.value.adaptive) {
     return;
   }
@@ -241,12 +251,15 @@ function setNumberValue(obj: { [x: string]: any; }, oldObj: { [x: string]: any; 
     if (typeof newVal == 'number') {
       obj[key] = oldVal * magnification;
     } else if (typeof newVal == 'object') {
-      setNumberValue(newVal, oldVal, newW, oldW);
+      setNumberValue(newVal, oldVal, newW, oldW, level+1);
     } else if (key == 'fontSize') {
       obj[key] = oldVal.replace(/^\d*/, (num: number) => {
         return num * magnification;
       })
     }
+  }
+  if (level === 0){
+    drawOption.value = obj
   }
 }
 //画
@@ -265,15 +278,13 @@ function clear() {
 }
 //设置大小
 function setClockBoxStyle() {
-  var obj: { width?: string | number, height?: string | number } = {}
+  var obj: { width?: string, height?: string } = {}
   if (drawOption.value.width){
     if (!/%$/.test(drawOption.value.width as string)) {
       obj.width = Number(drawOption.value.width) + 'px';
     } else {
       obj.width = drawOption.value.width as string;
     }
-  }else{
-    obj.width = $el.value.clientWidth + 'px'
   }
   if (drawOption.value.height) {
     if (!/%$/.test(drawOption.value.height as string)) {
@@ -282,10 +293,13 @@ function setClockBoxStyle() {
       obj.height = drawOption.value.height as string;
     }
   }else{
-    obj.height = obj.width
+    obj.height = '400px'
+    if(drawOption.value.border){
+      obj.height = drawOption.value.border.width + drawOption.value.border.lineWidth * 2 + 'px';
+    }
   }
   clockBoxStyle.value = obj;
-  canvas.value.width = Number(obj.width.split('px')[0]);
+  canvas.value.width = obj.width ? Number(obj.width.split('px')[0]) : $el.value.clientWidth
   canvas.value.height = Number(obj.height.split('px')[0])
 }
 //画边框

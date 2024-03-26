@@ -6,18 +6,18 @@
 
 ``` bash
 # install
-npm install -S vue-clock-lonlyape
+npm install -S vue-clock-lonlyape-v3
 
 # main.js
 ......
-import vueClock from 'vue-clock-lonlyape'
-app.use(vueClock)
+import Clock from 'vue-clock-lonlyape-v3'
+app.use(Clock)
 ......
 
 or
 # xxx.vue
 ......
-import {vueClock} from 'vue-clock-lonlyape'
+import {clock} from 'vue-clock-lonlyape-v3'
 ......
 components:{
 	myClock:vueClock
@@ -25,8 +25,8 @@ components:{
 ......
 ```
 
-<!-- ## 例子 -->
-<!-- [一个小展示](https://lonlyape.github.io/vue-clock/#/clock) -->
+## 例子
+[一个小展示](https://lonlyape.github.io/vue-clock/#/clock)
 
 # 参数
 
@@ -115,13 +115,3 @@ components:{
 | 事件名 | 说明 | 参数 |
 |-----|------|------|
 | timeChange | 一秒触发一次，当 time.isStatic 为 true 时，只触发一次 | 当前时间的 date 对象 |
-
-
-# 更新日志
-
-### 1.2.0
-* 添加 timeChange 事件
-
-### 1.1.0
-
-* 添加自适应功能，以参数 adaptive 控制，如果容器小于时钟设定的大小，时钟将根据容器的大小自行调整
