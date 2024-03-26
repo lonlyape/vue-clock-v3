@@ -12,7 +12,7 @@
     "preview": "vite preview"
   },
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/lonlyape"
+    "registry": "https://registry.npmjs.org"
   },
   "repository": {
     "type": "git",
@@ -22,10 +22,10 @@
   "keywords": [
     "vue-clock-v3",
     "vue-clock-lonlyape",
+    "vue-clock-lonlyape-v3",
     "vue-clock",
     "vueClock",
-    "clock",
-    "vue"
+    "clock"
   ],
   "dependencies": {
     "vue": "^3.4.21"
