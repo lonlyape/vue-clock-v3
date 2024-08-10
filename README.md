@@ -1,4 +1,4 @@
-# vue-clock-lonlyape
+# vue-clock-lonlyape-v3
 
 > vue 的时钟组件
 
