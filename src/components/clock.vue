@@ -46,8 +46,9 @@ interface Needle {
   longOut: number
 }
 
-interface PropsType {
+export interface PropsType {
   option?:PropsType,
+  drawFunc?: Function,
   width?: string | number
   height?: string | number // 默认 400px
   adaptive?: boolean //自适应
@@ -71,6 +72,7 @@ const defOption: PropsType = {
     timestamp: 0
   },
   border: {
+    isBorder: true,
     type: 'circle', //边界类型（圆、四边形）;circle(圆形) 、 rectangle(四边形)
     width: 300,
     height: 300,
@@ -271,6 +273,7 @@ function draw() {
   drawDial();
   drawNumber();
   drawNeedle();
+  drawOption.value.drawFunc && drawOption.value.drawFunc(canvas.value, context, drawOption.value, timeAngle.value);
 }
 //清除
 function clear() {
@@ -304,6 +307,9 @@ function setClockBoxStyle() {
 }
 //画边框
 function drawBorder() {
+  if (!drawOption.value.border.isBorder) {
+    return;
+  }
   context.save();
   context.translate(canvas.value.width / 2, canvas.value.height / 2);
   context.beginPath();
@@ -312,7 +318,7 @@ function drawBorder() {
   if (drawOption.value.border.type == 'rectangle') {
     context.rect(-width / 2, -height / 2, width, height);
   } else {
-    context.arc(0, 0, width / 2, 0, Math.PI * 2, true);
+    context.arc(0, 0, Math.min(width, height) / 2, 0, Math.PI * 2, true);
   }
   context.closePath();
   context.strokeStyle = drawOption.value.border.color;
