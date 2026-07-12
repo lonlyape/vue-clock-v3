@@ -11,6 +11,7 @@ interface Time {
   timestamp?: number//时钟的时间，只有 isStatic 为 true 时才起作用
 }
 interface Border {
+  isBorder: boolean //是否要边界
   type: 'circle' | 'rectangle' //边界类型（圆、四边形）;circle(圆形) 、 rectangle(四边形)
   width: number //时钟的宽度或直径，如果 type==circle ，则为时钟的直径
   height?: number //时钟的高度，只有 type==rectangle 明有效

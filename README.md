@@ -32,6 +32,7 @@ components:{
 
 | 属性 | 类型 | 默认值 | 说明 |
 |-----|------|-------|------|
+|drawFunc | `Function` | undefined | 自定义绘制时钟的函数，参数为 canvas, context,drawOption |
 | width | `String` | auto | canvas 画布的宽度，默认为画布容器的宽度 |
 | height | `String` | auto | canvas 画布的高度，默认与画布的宽度一致 |
 | timezone | `Number` | 本地时区 | [时区](http://www.shijian.cc/shiqu/)，如时区为 UTC+8，则 timezone=8|
@@ -54,6 +55,7 @@ components:{
 
 | 属性 | 类型 | 默认值 | 说明 |
 |-----|------|-------|------|
+| isBorder | `Boolean` | true | 是否需要边界 |
 | type | `String` | circle | 边界类型（圆、四边形）;circle(圆形) 、 rectangle(四边形) |
 | width | `Number` | 300 | 时钟的宽度或直径，如果 type==circle ，则为时钟的直径 |
 | height | `Number` | 300 | 时钟的高度，只有 type==rectangle 明有效 |
